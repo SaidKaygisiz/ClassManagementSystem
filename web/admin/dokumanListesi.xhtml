@@ -1,0 +1,79 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:p="http://xmlns.jcp.org/jsf/passthrough"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="admintemp.xhtml">
+
+    <ui:define name="orta">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-9"><h2 id="baslik1">Döküman Tablosu</h2>
+                    <h:form id="tablo">
+                        <b><i>Şuanda #{dok.page}. Sayfadasınız</i></b><br></br>
+                        <div class="btn-group">
+                            <h:commandButton rendered="#{dok.hasPrev()}" action="#{dok.first()}"  style="width: 111px; color: black" styleClass="btn-outline-primary" value="First">
+                                <f:ajax execute="@this" render="tablo form1"/>
+                            </h:commandButton>
+                            <h:commandButton rendered="#{dok.hasPrev()}" action="#{dok.previous()}"  style="width: 111px; color: black" styleClass="btn-outline-primary" value="Previous">
+                                <f:ajax execute="@this" render="tablo form1"/>
+                            </h:commandButton>
+                            <h:commandButton rendered="#{dok.hasNext()}" action="#{dok.next()}"  style="width: 111px; color: black" styleClass="btn-outline-primary"  value="Next">
+                                <f:ajax execute="@this" render="tablo form1"/>
+                            </h:commandButton>
+                            <h:commandButton rendered="#{dok.hasNext()}" action="#{dok.last()}"  style="width: 111px; color: black" styleClass="btn-outline-primary" value="Last">
+                                <f:ajax execute="@this" render="tablo form1"/>
+                            </h:commandButton>
+                        </div>
+                        <h:dataTable class="table table-striped table-hover" value="#{dok.dokumanListesi}" var="dokuman">                          
+                            <h:column>
+                                <f:facet name="header">Döküman Adı</f:facet>
+                                <h:commandLink style="color: black" value="#{dokuman.dok_ad}" action="#{dok.updateForm(dokuman)}">
+                                    <f:ajax execute="@this" render="form1"/>
+                                </h:commandLink>
+                            </h:column>
+                            
+                            <h:column>
+                                <f:facet name="header">Döküman Tipi</f:facet>
+                                    #{dokuman.tip}
+                            </h:column>
+                            <h:column>  
+                                <h:panelGroup layout="block" rendered="#{dokuman.tip.contains('image')}" >
+                                    <h:graphicImage width="100" value="/file/#{dokuman.dok_ad}"/><br></br>
+                                    <a href="/Projemiz/faces/file/#{dokuman.dok_ad}">#{dokuman.dok_ad}</a>
+                            </h:panelGroup>
+                                <h:panelGroup layout="block" rendered="#{dokuman.tip.contains('application')}" >
+                                    <a href="/Projemiz/faces/file/#{dokuman.dok_ad}">#{dokuman.dok_ad}</a>
+                                </h:panelGroup>
+                               
+                            </h:column>
+                            <h:column>
+                                <div class="btn-group">
+                                    <f:facet name="header">Delete-Detail</f:facet>
+                                    <h:commandButton onclick="$('#deletedok').modal('show')" styleClass="btn-danger" value="Delete" action="#{dok.updateForm(dokuman)}">
+                                        <f:ajax execute="form1" render="deletemodal"/>
+                                    </h:commandButton>
+                                    <h:commandButton value="Detail" onclick="$('#dokumandetay').modal('show')" styleClass="btn-info" action="#{dok.updateForm(dokuman)}">                                             
+                                        <f:ajax execute="@this" render="detaydok"/>
+                                    </h:commandButton>
+                                </div>
+                            </h:column>
+                        </h:dataTable>
+                    </h:form>
+                </div>
+                <div class="col-md-3">
+                    <h:form  styleClass="d-table" id="form1" enctype="multipart/form-data"><h1 id="baslik2">Form</h1>
+                        <div class="form-group">
+                            <label><b><i>Döküman Yükleme</i></b></label>
+                            <h:inputFile value="#{dok.file}" styleClass="custom-file"/>
+                        </div>
+                        <h:commandButton action="#{dok.upload()}" value="Yükle" styleClass="btn-info"/>
+                    </h:form>
+                </div>
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>
+

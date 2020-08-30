@@ -1,0 +1,93 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="admintemp.xhtml">
+
+    <ui:define name="orta">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-10"><h2 id="baslik1">Verir Tablosu</h2>
+                    <h:form id="tablo">
+                        <b><i>Şuanda #{vrr.page}. Sayfadasınız</i></b><br></br>
+                        <div class="btn-group">
+                            <h:commandButton rendered="#{vrr.hasPrev()}" action="#{vrr.first()}"  style="width: 111px; color: black" styleClass="btn-outline-primary" value="First">
+                                <f:ajax execute="@this" render="tablo form1"/>
+                            </h:commandButton>
+                            <h:commandButton rendered="#{vrr.hasPrev()}" action="#{vrr.previous()}"  style="width: 111px; color: black" styleClass="btn-outline-primary" value="Previous">
+                                <f:ajax execute="@this" render="tablo form1"/>
+                            </h:commandButton>
+                            <h:commandButton rendered="#{vrr.hasNext()}" action="#{vrr.next()}"  style="width: 111px; color: black" styleClass="btn-outline-primary"  value="Next">
+                                <f:ajax execute="@this" render="tablo form1"/>
+                            </h:commandButton>
+                            <h:commandButton rendered="#{vrr.hasNext()}" action="#{vrr.last()}"  style="width: 111px; color: black" styleClass="btn-outline-primary" value="Last">
+                                <f:ajax execute="@this" render="tablo form1"/>
+                            </h:commandButton>
+                        </div>
+                        <h:dataTable class="table table-striped table-hover" value="#{vrr.verirList}" var="verir">
+                            <h:column>
+                                <f:facet name="header">Öğretmen AD-SOYAD</f:facet>
+                                <h:commandLink style="color: #000" value="#{verir.ogretmen.kul.ad}&nbsp;#{verir.ogretmen.kul.soyad}" action="#{vrr.updateForm(verir)}">
+                                    <f:ajax execute="@this" render="form1"/>
+                                </h:commandLink>
+                            </h:column>
+
+                            <h:column>
+                                <f:facet name="header">Ders AD</f:facet>
+                                    #{verir.dersler.ders_ad}
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">Dönem</f:facet>
+                                    #{verir.verir_donem}
+                            </h:column>  
+                            <h:column>
+                                <f:facet name="header">Delete-Detail</f:facet>
+                                <h:commandButton onclick="$('#deletevrr').modal('show')" styleClass="btn-danger" value="Delete" action="#{vrr.updateForm(verir)}">
+                                    <f:ajax execute="form1" render="deletevrr form1"/>
+                                </h:commandButton>
+                                <h:commandButton value="Detail" onclick="$('#verirdetay').modal('show')" styleClass="btn-info" action="#{vrr.updateForm(verir)}">                                             
+                                    <f:ajax execute="@this" render="detayvrr"/>
+                                </h:commandButton>
+                            </h:column>
+                        </h:dataTable>
+                    </h:form>
+                </div>
+                <div class="col-md-2">
+                    <h:form  styleClass="d-table" id="form1"><h1 id="baslik2">Form</h1>
+                        <b><label for="ogrtlist">Öğretmen Listesi</label></b> 
+                        <h:selectOneMenu  styleClass="custom-select" id="ogrtlist" value="#{vrr.verir.ogretmen}" converter="ogretmenConverter">
+                            <f:selectItems  value="#{ogrt.ogretmenListAll}" var="ogrtmn" itemValue="#{ogrtmn}" itemLabel="#{ogrtmn.kul.ad}&nbsp;#{ogrtmn.kul.soyad}"/>
+                        </h:selectOneMenu>
+                        <b><label for="derslist">Ders Listesi</label></b>
+                        <h:selectOneMenu styleClass="custom-select" id="derslist" value="#{vrr.verir.dersler}" converter="dersConverter">
+                            <f:selectItems value="#{ders.dersListesiAll}" var="drs" itemValue="#{drs}" itemLabel="#{drs.ders_ad}"/>
+                        </h:selectOneMenu>
+                        <b><label for="dnmlist">Dönem</label></b>
+                        <h:selectOneMenu styleClass="custom-select" id="dnmlist" value="#{vrr.verir.verir_donem}">
+                            <f:selectItem itemLabel="Dönem Seçiniz"/>
+                            <f:selectItem  itemValue="2013-2014" itemLabel="2013-2014"/>
+                            <f:selectItem  itemValue="2014-2015" itemLabel="2014-2015"/>
+                            <f:selectItem  itemValue="2015-2016" itemLabel="2015-2016"/>
+                            <f:selectItem  itemValue="2016-2017" itemLabel="2016-2017"/>
+                            <f:selectItem  itemValue="2017-2018" itemLabel="2017-2018"/>
+                        </h:selectOneMenu>
+
+                        <h:form styleClass="btn btn-group ">
+                            <h:commandButton rendered="#{vrr.verir.verir_id!=0}"  styleClass="btn-primary"  value="Güncelle" action="#{vrr.updatee()}">
+                                <f:ajax execute="form1" render="form1 tablo"/>
+                            </h:commandButton>
+                            <h:commandButton rendered="#{vrr.verir.verir_id==0}"  styleClass="btn-success" value="Kaydet" action="#{vrr.insert()}">
+                                <f:ajax execute="form1" render="form1 tablo"/>
+                            </h:commandButton>
+                            <h:commandButton rendered="#{vrr.verir.verir_id!=0}" styleClass="btn-success" value="Formu Temizle" action="#{vrr.clearForm()}">
+                                <f:ajax execute="form1 tablo" render="form1 tablo"/>
+                            </h:commandButton>
+                        </h:form>
+                    </h:form>
+                </div>
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>

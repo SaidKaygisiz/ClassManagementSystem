@@ -1,0 +1,117 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:p="http://xmlns.jcp.org/jsf/passthrough"
+                template="admintemp.xhtml">
+
+    <ui:define name="orta">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-10"><h2 id="baslik1">Öğrenci Tablosu</h2>
+                    <h:form id="tablo">
+                        <b><i>Şuanda #{ogr.page}. Sayfadasınız</i></b><br></br>
+                        <div class="btn-group">
+                            <h:commandButton rendered="#{ogr.hasPrev()}" action="#{ogr.first()}"  style="width: 111px; color: black" styleClass="btn-outline-primary" value="First">
+                                <f:ajax execute="@this" render="tablo form1"/>
+                            </h:commandButton>
+                            <h:commandButton rendered="#{ogr.hasPrev()}" action="#{ogr.previous()}"  style="width: 111px; color: black" styleClass="btn-outline-primary" value="Previous">
+                                <f:ajax execute="@this" render="tablo form1"/>
+                            </h:commandButton>
+                            <h:commandButton rendered="#{ogr.hasNext()}" action="#{ogr.next()}"  style="width: 111px; color: black" styleClass="btn-outline-primary"  value="Next">
+                                <f:ajax execute="@this" render="tablo form1"/>
+                            </h:commandButton>
+                            <h:commandButton rendered="#{ogr.hasNext()}" action="#{ogr.last()}"  style="width: 111px; color: black" styleClass="btn-outline-primary" value="Last">
+                                <f:ajax execute="@this" render="tablo form1"/>
+                            </h:commandButton>
+                        </div>
+                        <h:dataTable class="table table-striped table-hover" value="#{ogr.ogrencilist}" var="ogrenci">
+                            <h:column>
+                                <f:facet name="header">Öğrenci Adı-Soyadı</f:facet>
+                                <h:commandLink style="color: #000" value="#{ogrenci.kul.ad}&nbsp;#{ogrenci.kul.soyad}" action="#{ogr.updateForm(ogrenci)}">
+                                    <f:ajax execute="@this" render="form1"/>
+                                </h:commandLink>
+                            </h:column>
+
+                            <h:column>
+                                <f:facet name="header">Sınıf</f:facet>
+                                    #{ogrenci.sinif}
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">Dersler</f:facet>
+                                <ul>
+                                    <ui:repeat value="#{ogrenci.ogrenciDersler}" var="d">
+                                        <li>#{d.ders_ad}→#{alr.puanGetir(ogrenci.ogr_id,d.ders_id)}</li>
+                                    </ui:repeat>   
+                                </ul>
+
+                            </h:column>
+
+                            <h:column>
+                                <f:facet name="header">Tel No</f:facet>
+                                    #{ogrenci.kul.tel_no}
+                            </h:column>
+
+                            <h:column>
+                                <f:facet name="header">Delete-Detail</f:facet>
+                                <h:commandButton onclick="$('#deleteogr').modal('show')"  styleClass="btn-danger" value="Delete" action="#{ogr.updateForm(ogrenci)}">
+                                    <f:ajax execute="@this" render="deleteogr  form1"/>
+                                </h:commandButton>
+                                <h:commandButton value="Detail" onclick="$('#ogrencidetay').modal('show')" styleClass="btn-info" action="#{ogr.updateForm(ogrenci)}">                                             
+                                    <f:ajax execute="@this" render="detayogr"/>
+                                </h:commandButton>
+                            </h:column>
+                        </h:dataTable>
+                    </h:form>
+                </div>
+                <div class="col-md-2">
+                    <h:form  styleClass="d-table" id="form1"><h1 id="baslik2">Form</h1>
+                        <b><h:outputText value="Öğrenci Adı"></h:outputText><br></br></b>
+                        <h:inputText id="ograd" p:placeholder="Ad Giriniz"  required="true" requiredMessage="Boş Bırakılamaz!" validatorMessage="Yalnız harf girin!" value="#{ogr.ogrenci.kul.ad}" autocomplete="off" >
+                            <f:validateRegex pattern="[A-Za-z \ç\Ç\ö\Ö\ş\Ş\ı\İ\ğ\Ğ\ü\Ü ]+"/>
+                        </h:inputText><br></br>
+                        <h:message for="ograd" errorStyle="color:red;display:block"/>
+                        <b><h:outputText value="Öğrenci Soyadı"></h:outputText><br></br></b>
+                        <h:inputText id="ogrsoyad" p:placeholder="Soyad Giriniz"  required="true" requiredMessage="Boş Bırakılamaz!" validatorMessage="Yalnız harf girin!" value="#{ogr.ogrenci.kul.soyad}" autocomplete="off" >
+                            <f:validateRegex pattern="[A-Za-z \ç\Ç\ö\Ö\ş\Ş\ı\İ\ğ\Ğ\ü\Ü ]+"/>
+                        </h:inputText><br></br>
+                        <h:message for="ogrsoyad" errorStyle="color:red;display:block"/>
+                        <b><h:outputText value="Öğrenci Email"></h:outputText><br></br></b>
+                        <h:inputText id="ogremail" p:placeholder="Öğrenci Email"  required="true" requiredMessage="Boş Bırakılamaz!" validatorMessage="Geçersiz E-mail!" value="#{ogr.ogrenci.kul.email}" autocomplete="off" >
+                            <f:validateRegex pattern="[\w\.-]*[a-zA-Z0-9_]@[\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z]"/>
+                        </h:inputText><br></br>
+                        <h:message for="ogremail" errorStyle="color:red;display:block"/>
+                        <b><h:outputText value="Öğrenci Şifre"></h:outputText><br></br></b>
+                        <h:inputSecret id="ogrsifre" p:placeholder="Öğrenci Şifre"   requiredMessage="Boş Bırakılamaz!" value="#{ogr.ogrenci.kul.sifre}" autocomplete="off" /><br></br>
+                        <h:message for="ogrsifre" errorStyle="color:red;display:block"/>
+                        <b><h:outputText value="Öğrenci TelNo"></h:outputText><br></br></b>
+                        <h:inputText id="ogrtel" p:placeholder="Öğrenci TelNo"  required="true" requiredMessage="Boş Bırakılamaz!" validatorMessage="Yalnız sayı girin!" value="#{ogr.ogrenci.kul.tel_no}" autocomplete="off" >
+                            <f:validateRegex pattern="[0-9]+"/>
+                        </h:inputText><br></br>
+                        <h:message for="ogrtel" errorStyle="color:red;display:block"/>
+                        <b><h:outputText value="Öğrenci Sınıfı"></h:outputText><br></br></b>
+                        <h:inputText id="ogrsinif" validatorMessage="Max:4 Min:1" p:placeholder="Sınıf Giriniz"  required="true" requiredMessage="Boş Bırakılamaz" value="#{ogr.ogrenci.sinif}" autocomplete="off" >
+                            <f:validateLongRange maximum="4" minimum="1"/>
+                        </h:inputText><br></br>
+                        <h:message for="ogrsinif" errorStyle="color:red;display:block"/>
+
+                        <h:form styleClass="btn btn-group ">
+                            <h:commandButton rendered="#{ogr.ogrenci.ogr_id!=0}"  styleClass="btn-primary"  value="Güncelle" action="#{ogr.updatee()}">
+                                <f:ajax execute="form1" render="form1 tablo"/>
+                            </h:commandButton>
+                            <h:commandButton rendered="#{ogr.ogrenci.ogr_id==0}"  styleClass="btn-success" value="Kaydet" action="#{ogr.insert()}">
+                                <f:ajax execute="form1" render="form1 tablo"/>
+                            </h:commandButton>
+                            <h:commandButton rendered="#{ogr.ogrenci.ogr_id!=0}"  styleClass="btn-success" value="Formu Temizle" action="#{ogr.clearForm()}">
+                                <f:ajax execute="form1 tablo" render="form1 tablo"/>
+                            </h:commandButton>
+                        </h:form>
+                    </h:form>
+                </div>
+            </div>     
+        </div>
+    </ui:define>
+</ui:composition>
+

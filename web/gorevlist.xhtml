@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="templateindex.xhtml"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:define name="orta">
+        <h3><b>Görev Listesi</b></h3>
+        <h:dataTable class="table-striped table-hover" var="gorev" value="#{grv.gorevListesiAll}">
+            <h:column>
+                <f:facet name="header">Ad</f:facet>
+                <b>#{gorev.gorev_ad}</b>
+            </h:column>
+            <h:column>
+                <f:facet name="header">Tip</f:facet>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>#{gorev.tip.tip_ad}</b>
+            </h:column> 
+        </h:dataTable>
+
+    </ui:define>
+</ui:composition>

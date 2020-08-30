@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="templateindex.xhtml"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:define name="orta">
+        <h3><b>Döküman Listesi</b></h3>
+            <h:form>
+                <h:commandButton rendered="#{dok.hasPrev()}" action="#{dok.first()}"  style="width: 111px; color: black" styleClass="btn-outline-primary" value="First">
+                </h:commandButton>
+                <h:commandButton rendered="#{dok.hasPrev()}" action="#{dok.previous()}"  style="width: 111px; color: black" styleClass="btn-outline-primary" value="Previous">
+                </h:commandButton>
+                <h:commandButton rendered="#{dok.hasNext()}" action="#{dok.next()}"  style="width: 111px; color: black" styleClass="btn-outline-primary"  value="Next">
+                </h:commandButton>
+                <h:commandButton rendered="#{dok.hasNext()}" action="#{dok.last()}"  style="width: 111px; color: black" styleClass="btn-outline-primary" value="Last">
+                </h:commandButton>
+            </h:form>
+        
+        <h:dataTable class="table-striped" var="dokuman" value="#{dok.dokumanListesi}">
+            <h:column>
+                <f:facet name="header">Ad</f:facet>
+                <b>#{dokuman.dok_ad}</b>
+            </h:column>
+            <h:column>
+                <f:facet name="header">Uzantı</f:facet>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#{dokuman.uzanti}" style="color: #000">#{dokuman.uzanti}</a>
+            </h:column> 
+        </h:dataTable>
+
+    </ui:define>
+</ui:composition>

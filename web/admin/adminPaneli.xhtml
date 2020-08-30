@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="admintemp.xhtml">
+
+    <ui:define name="orta">
+        <center><b><h2>Yönetici Paneline Hoşgeldiniz</h2></b></center><br></br>
+        <div id="sonogrenci">
+            <b><center>Son Kayıt Olan Öğrenciler</center></b><br></br>
+            <ul>
+                <ui:repeat value="#{ogr.ogrencilistLastFive}" var="o">
+                    <li>#{o.kul.ad}&nbsp;&nbsp;#{o.kul.soyad}</li>
+                </ui:repeat>
+            </ul>
+        </div>
+        <div id="sonogretmen">
+            <b><center>Son Kayıt Olan Öğretmenler</center></b><br></br>
+            <ul>
+                <ui:repeat value="#{ogrt.ogretmenListLastFive}" var="og">
+                    <li>#{og.kul.ad}&nbsp;&nbsp;#{og.kul.soyad}</li>
+                </ui:repeat>
+            </ul>
+        </div>
+        <div id="sondokuman">
+            <b><center>Son Yüklenen Dökümanlar</center></b><br></br>
+            <ul>
+                <ui:repeat value="#{dok.dokumanListesiLastFive}" var="d">
+                    <li>#{d.dok_ad}||&nbsp;&nbsp;&nbsp;#{d.uzanti}</li>
+                </ui:repeat>
+            </ul>
+        </div>
+        
+    </ui:define>
+
+
+</ui:composition>

@@ -1,0 +1,93 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:p="http://xmlns.jcp.org/jsf/passthrough"
+                template="admintemp.xhtml">
+    <ui:define name="orta">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-10"><h2 id="baslik1">Dersler Tablosu</h2>
+                    <h:form id="tablo">
+                        <b><i>Şuanda #{ders.page}. Sayfadasınız</i></b><br></br>
+                        <div class="btn-group">
+                            <h:commandButton rendered="#{ders.hasPrev()}" action="#{ders.first()}"  style="width: 111px; color: black" styleClass="btn-outline-primary" value="First">
+                                <f:ajax execute="@this" render="tablo"/>
+                            </h:commandButton>
+                            <h:commandButton rendered="#{ders.hasPrev()}" action="#{ders.previous()}"  style="width: 111px; color: black" styleClass="btn-outline-primary" value="Previous">
+                                <f:ajax execute="@this" render="tablo"/>
+                            </h:commandButton>
+                            <h:commandButton rendered="#{ders.hasNext()}" action="#{ders.next()}"  style="width: 111px; color: black" styleClass="btn-outline-primary"  value="Next">
+                                <f:ajax execute="@this" render="tablo"/>
+                            </h:commandButton>
+                            <h:commandButton rendered="#{ders.hasNext()}" action="#{ders.last()}"  style="width: 111px; color: black" styleClass="btn-outline-primary" value="Last">
+                                <f:ajax execute="@this" render="tablo"/>
+                            </h:commandButton>
+                        </div>
+                        <h:dataTable class="table table-striped table-hover" value="#{ders.dersListesi}" var="dersler">
+                            <h:column>
+                                <f:facet name="header">Ders ID</f:facet>
+                                    #{dersler.ders_id}
+                            </h:column>
+
+                            <h:column>
+                                <f:facet name="header">Ders Adı</f:facet>
+                                <h:commandLink style="color: #000" value="#{dersler.ders_ad}" action="#{ders.updateForm(dersler)}">
+                                    <f:ajax execute="@this" render="form1"/>
+                                </h:commandLink>
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">Ders Akts</f:facet>
+                                    #{dersler.akts}
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">Öğrenciler</f:facet>
+                                <ul>
+                                    <ui:repeat value="#{dersler.ogrenciList}" var="o">
+                                        <li>#{o.kul.ad}&nbsp;#{o.kul.soyad}</li>
+                                    </ui:repeat>   
+                                </ul>
+
+                            </h:column>
+
+                            <h:column>
+                                <div class="btn-group">
+                                    <f:facet name="header">Delete-Detail</f:facet>
+                                    <h:commandButton onclick="$('#deleteders').modal('show')" styleClass="btn-danger" value="Delete" action="#{ders.confirm(dersler)}">
+                                        <f:ajax execute="@this" render="deleteders"/>
+                                    </h:commandButton>
+                                    <h:commandButton value="Detail" onclick="$('#dersdetay').modal('show')" styleClass="btn-info" action="#{ders.updateForm(dersler)}">                                             
+                                        <f:ajax execute="@this" render="detayders"/>
+                                    </h:commandButton>
+                                </div>
+                            </h:column>
+                        </h:dataTable>
+                    </h:form>
+                </div>
+                <div class="col-md-2">
+                    <h:form  styleClass="d-table" id="form1"><h1 id="baslik2">Form</h1>
+                        <b><h:outputText  value="Ders Adı"></h:outputText><br></br></b>
+                        <h:inputText p:placeholder="Ders Adı Giriniz" required="true" requiredMessage="Ders Adını Boş Brakma" title="ders adı" value="#{ders.dersler.ders_ad}" autocomplete="off" /><br></br>
+                        <b><h:outputText value="Ders Akts"></h:outputText><br></br></b>
+                        <h:inputText p:placeholder="Ders Akts Giriniz" title="ders akts" required="true" requiredMessage="AKTS Alanını Boş Bırakma" value="#{ders.dersler.akts}" autocomplete="off" /><br></br>
+
+
+                        <h:form styleClass="btn btn-group">
+                            <h:commandButton rendered="#{ders.dersler.ders_id!=0}"  styleClass="btn-primary"  value="Güncelle" action="#{ders.updatee()}">
+                                <f:ajax execute="form1" render="form1 tablo"/>
+                            </h:commandButton>
+                            <h:commandButton rendered="#{ders.dersler.ders_id==0}"  styleClass="btn-success" value="Kaydet" action="#{ders.insert()}">
+                                <f:ajax execute="form1" render="form1 tablo"/>
+                            </h:commandButton>
+                            <h:commandButton rendered="#{ders.dersler.ders_id!=0}"  styleClass="btn-success" value="Formu Temizle" action="#{ders.clearForm()}">
+                                <f:ajax execute="form1 tablo" render="form1 tablo"/>
+                            </h:commandButton>
+                        </h:form>
+                    </h:form>
+                </div>
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>

@@ -1,0 +1,114 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:p="http://xmlns.jcp.org/jsf/passthrough"
+                template="admintemp.xhtml">
+
+    <ui:define name="orta">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-10"><h2 id="baslik1"><b>Öğretmen Tablosu</b></h2>
+                    <h:form id="tablo">
+                        <b><i>Şuanda #{ogrt.page}. Sayfadasınız</i></b><br></br>
+                        <div class="btn-group">
+                            <h:commandButton rendered="#{ogrt.hasPrev()}" action="#{ogrt.first()}"  style="width: 111px; color: black" styleClass="btn-outline-primary" value="First">
+                                <f:ajax execute="@this" render="tablo form1"/>
+                            </h:commandButton>
+                            <h:commandButton rendered="#{ogrt.hasPrev()}" action="#{ogrt.previous()}"  style="width: 111px; color: black" styleClass="btn-outline-primary" value="Previous">
+                                <f:ajax execute="@this" render="tablo form1"/>
+                            </h:commandButton>
+                            <h:commandButton rendered="#{ogrt.hasNext()}" action="#{ogrt.next()}"  style="width: 111px; color: black" styleClass="btn-outline-primary"  value="Next">
+                                <f:ajax execute="@this" render="tablo form1"/>
+                            </h:commandButton>
+                            <h:commandButton rendered="#{ogrt.hasNext()}" action="#{ogrt.last()}"  style="width: 111px; color: black" styleClass="btn-outline-primary" value="Last">
+                                <f:ajax execute="@this" render="tablo form1"/>
+                            </h:commandButton>
+                        </div>
+                        <h:dataTable class="table table-striped table-hover" value="#{ogrt.ogretmenList}" var="ogretmen">
+                            <h:column>
+                                <f:facet name="header">Öğretmen Ad-Soyad</f:facet>
+                                <h:commandLink style="color: #000" value="#{ogretmen.kul.ad}&nbsp;&nbsp;#{ogretmen.kul.soyad}" action="#{ogrt.updateForm(ogretmen)}">
+                                    <f:ajax execute="@this" render="form1"/>
+                                </h:commandLink>
+                            </h:column>
+
+                            <h:column>
+                                <f:facet name="header">Dökümanlar</f:facet>
+                                <ul>
+                                    <ui:repeat value="#{ogretmen.ogretmenDokumans}" var="dokuman">
+                                        <li>#{dokuman.dok_ad}</li>
+                                    </ui:repeat>   
+                                </ul>
+
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">Tel No</f:facet>
+                                    #{ogretmen.kul.tel_no}
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">Öğretmen Giriş Tarihi</f:facet>
+                                    #{ogretmen.ogrt_giris}
+                            </h:column>
+                            <h:column>
+                                <div class="btn-group">
+                                    <f:facet name="header">Delete-Detail</f:facet>
+                                    <h:commandButton onclick="$('#deleteogrt').modal('show')" styleClass="btn-danger" value="Delete" action="#{ogrt.updateForm(ogretmen)}">
+                                        <f:ajax execute="form1" render="deleteogrt  form1"/>
+                                    </h:commandButton>
+                                    <h:commandButton value="Detail" onclick="$('#ogretmendetay').modal('show')" styleClass="btn-info" action="#{ogrt.updateForm(ogretmen)}">                                             
+                                        <f:ajax execute="@this" render="detayogrt"/>
+                                    </h:commandButton>
+                                </div>
+                            </h:column>
+                        </h:dataTable>
+                    </h:form>
+                </div>
+                <div class="col-md-2">
+                    <h:form  styleClass="d-table" id="form1"><h1 id="baslik2">Form</h1>
+                        <b><h:outputText value="Öğretmen Adı"></h:outputText><br></br></b>
+                        <h:inputText id="ogrtad" p:placeholder="Ad Giriniz"  required="true" requiredMessage="Boş Bırakılamaz!" validatorMessage="Yalnız harf girin!" value="#{ogrt.ogretmen.kul.ad}" autocomplete="off" >
+                            <f:validateRegex pattern="[A-Za-z \ç\Ç\ö\Ö\ş\Ş\ı\İ\ğ\Ğ\ü\Ü ]+"/>
+                        </h:inputText><br></br>
+                        <h:message for="ogrtad" errorStyle="color:red;display:block"/>
+                        <b><h:outputText value="Öğretmen Soyadı"></h:outputText><br></br></b>
+                        <h:inputText id="ogrtsoyad" p:placeholder="Soyad Giriniz"  required="true" requiredMessage="Boş Bırakılamaz!" validatorMessage="Yalnız harf girin!" value="#{ogrt.ogretmen.kul.soyad}" autocomplete="off" >
+                            <f:validateRegex pattern="[A-Za-z \ç\Ç\ö\Ö\ş\Ş\ı\İ\ğ\Ğ\ü\Ü ]+"/>
+                        </h:inputText><br></br>
+                        <h:message for="ogrtsoyad" errorStyle="color:red;display:block"/>
+                        <b><h:outputText value="Öğretmen Email"></h:outputText><br></br></b>
+                        <h:inputText id="ogrtemail" p:placeholder="e.g:abc@xxx.com"  required="true" requiredMessage="Boş Bırakılamaz" validatorMessage="Geçersiz E-mail!" value="#{ogrt.ogretmen.kul.email}" autocomplete="off" >
+                            <f:validateRegex pattern="[\w\.-]*[a-zA-Z0-9_]@[\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z]"/>
+                        </h:inputText><br></br>
+                        <h:message for="ogrtemail" errorStyle="color:red;display:block"/>
+                        <b><h:outputText value="Tel No"></h:outputText><br></br></b>
+                        <h:inputText id="ogrttel" p:placeholder="e.g:1112223344"  required="true" requiredMessage="Boş Bırakılamaz!" validatorMessage="Yalnız sayı girin!" value="#{ogrt.ogretmen.kul.tel_no}" autocomplete="off" >
+                            <f:validateRegex pattern="[0-9]+"/>
+                        </h:inputText><br></br>
+                        <h:message for="ogrttel" errorStyle="color:red;display:block"/>
+                        <b><h:outputText value="Şifre"></h:outputText><br></br></b>
+                        <h:inputSecret id="ogrtsifre" p:placeholder="Şifre Giriniz" value="#{ogrt.ogretmen.kul.sifre}" autocomplete="off" /><br></br>
+                        <h:message for="ogrtsifre" errorStyle="color:red;display:block"/>
+                        <b><h:outputText value="Giriş Tarihi" /></b>
+                        <h:inputText value="#{ogrt.ogretmen.ogrt_giris}" readonly="true" p:placeholder="Read Only"/>
+
+                        <h:form styleClass="btn btn-group ">
+                            <h:commandButton rendered="#{ogrt.ogretmen.ogrt_id!=0}"  styleClass="btn-primary"  value="Güncelle" action="#{ogrt.updatee()}">
+                                <f:ajax execute="form1" render="form1 tablo"/>
+                            </h:commandButton>
+                            <h:commandButton rendered="#{ogrt.ogretmen.ogrt_id==0}"  styleClass="btn-success" value="Kaydet" action="#{ogrt.insert()}">
+                                <f:ajax execute="form1" render="form1 tablo"/>
+                            </h:commandButton>
+                            <h:commandButton rendered="#{ogrt.ogretmen.ogrt_id!=0}"  styleClass="btn-success" value="Formu Temizle" action="#{ogrt.clearForm()}">
+                                <f:ajax execute="form1 tablo" render="form1 tablo"/>
+                            </h:commandButton>
+                        </h:form>
+                    </h:form>
+                </div>
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>
+

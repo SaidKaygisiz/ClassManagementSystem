@@ -1,0 +1,103 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:p="http://xmlns.jcp.org/jsf/passthrough"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="admintemp.xhtml">
+
+    <ui:define name="orta">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-10"><h2 id="baslik1">Birimler Tablosu</h2>
+                    <h:form id="tablo">
+                        <b><i>Şuanda #{birim.page}. Sayfadasınız</i></b><br></br>
+                        <div class="btn-group">
+                            <h:commandButton rendered="#{birim.hasPrev()}" action="#{birim.first()}"  style="width: 111px; color: black" styleClass="btn-outline-primary" value="First">
+                                <f:ajax execute="@this" render="tablo form1"/>
+                            </h:commandButton>
+                            <h:commandButton rendered="#{birim.hasPrev()}" action="#{birim.previous()}"  style="width: 111px; color: black" styleClass="btn-outline-primary" value="Previous">
+                                <f:ajax execute="@this" render="tablo form1"/>
+                            </h:commandButton>
+                            <h:commandButton rendered="#{birim.hasNext()}" action="#{birim.next()}"  style="width: 111px; color: black" styleClass="btn-outline-primary"  value="Next">
+                                <f:ajax execute="@this" render="tablo form1"/>
+                            </h:commandButton>
+                            <h:commandButton rendered="#{birim.hasNext()}" action="#{birim.last()}"  style="width: 111px; color: black" styleClass="btn-outline-primary" value="Last">
+                                <f:ajax execute="@this" render="tablo form1"/>
+                            </h:commandButton>
+                        </div>
+                        <h:dataTable class="table table-striped table-hover" value="#{birim.birimlerListesi}" var="birimler">                        
+                            <h:column>
+                                <f:facet name="header">Öğretmen AD-SOYAD</f:facet>
+                                <h:commandLink value="#{birimler.ogretmen.kul.ad}&nbsp;#{birimler.ogretmen.kul.soyad}" action="#{birim.updateForm(birimler)}" style="color: #000">
+                                    <f:ajax execute="@this" render="form1"/>
+                                </h:commandLink>
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">Fakülte</f:facet>
+                                    #{birimler.fakulte}
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">Bölüm</f:facet>
+                                    #{birimler.bolum}
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">Delete-Detail</f:facet>
+                                <div class="btn-group">
+                                    <h:commandButton onclick="$('#deletebirim').modal('show')" styleClass="btn-danger" value="Delete" action="#{birim.updateForm(birimler)}">
+                                        <f:ajax execute="form1" render="deletebirim"/>
+                                    </h:commandButton>
+                                    <h:commandButton value="Detail" onclick="$('#detaybirim').modal('show')" styleClass="btn-info" action="#{birim.updateForm(birimler)}">                                             
+                                        <f:ajax execute="@this" render="detaybrm"/>
+                                    </h:commandButton>
+                                </div>
+                            </h:column>
+                        </h:dataTable>
+                    </h:form> 
+                </div>
+
+                <div class="col-md-2">
+                    <h:form  styleClass="d-table" id="form1"><h1 id="baslik2">Form</h1>
+
+                        <b>  <label for="ogrtlist">Öğretmen Listesi</label> </b>
+                        <h:selectOneMenu styleClass="custom-select" id="ogrtlist" value="#{birim.birimler.ogretmen}" converter="ogretmenConverter"> 
+                            <f:selectItems value="#{ogrt.ogretmenListAll}" var="ogrtmn" itemValue="#{ogrtmn}" itemLabel="#{ogrtmn.kul.ad}&nbsp;#{ogrtmn.kul.soyad}"/>
+                        </h:selectOneMenu>
+                        <b> <label for="blmlist">Fakültesi Listesi</label> </b>
+                        <h:selectOneMenu styleClass="custom-select" id="blmlist" value="#{birim.birimler.fakulte}" required="true" requiredMessage="Boş Bırakılamaz!">
+                            <f:selectItem itemLabel="Fakülte Seçiniz"/>
+                            <f:selectItem  itemValue="Mühendislik Fakültesi" itemLabel="Mühendislik Fakültesi"/>
+                            <f:selectItem  itemValue="Tıp Fakültesi" itemLabel="Tıp Fakültesi"/>
+                            <f:selectItem  itemValue="Eczacılık Fakültesi" itemLabel="Eczacılık Fakültesi"/>
+                            <f:selectItem  itemValue="Siyasi Bilimler Fakültesi" itemLabel="Siyasi Bilimler Fakültesi"/>
+                            <f:selectItem  itemValue="İlahiyat Fakültesi" itemLabel="İlahiyat Fakültesi"/>
+                            <f:selectItem  itemValue="Fen-Edebiyat Fakültesi" itemLabel="Fen-Edebiyat Fakültesi"/>
+                            <f:selectItem  itemValue="BESYO" itemLabel="BESYO"/>
+                        </h:selectOneMenu>
+                        <h:message for="blmlist" errorStyle="color:red;display:block"/>
+
+                        <b><h:outputText value="Öğretmen Bölüm"></h:outputText><br></br></b>
+                        <h:inputText id="bolum" p:placeholder="Bölüm Giriniz"  value="#{birim.birimler.bolum}" autocomplete="off" required="true" requiredMessage="Boş Bırakılamaz!" validatorMessage="Yalnız harf girin!" >
+                            <f:validateRegex pattern="[A-Za-z \ç\Ç\ö\Ö\ş\Ş\ı\İ\ğ\Ğ\ü\Ü ]+"/>
+                        </h:inputText>
+                        <h:message for="bolum" errorStyle="color:red;display:block"/>
+
+                        <h:form styleClass="btn btn-group ">
+                            <h:commandButton rendered="#{birim.birimler.birim_id!=0}" styleClass="btn-primary"  value="Güncelle" action="#{birim.updatee()}">
+                                <f:ajax execute="form1" render="form1 tablo"/>
+                            </h:commandButton>
+                            <h:commandButton rendered="#{birim.birimler.birim_id==0}"  styleClass="btn-success" value="Kaydet" action="#{birim.insert()}">
+                                <f:ajax execute="form1" render="form1 tablo"/>
+                            </h:commandButton>
+                            <h:commandButton rendered="#{birim.birimler.birim_id!=0}" styleClass="btn-success" value="Formu Temizle" action="#{birim.clearForm()}">
+                                <f:ajax execute="form1 tablo" render="form1 tablo"/>
+                            </h:commandButton>
+                        </h:form>
+                    </h:form>
+                </div>
+            </div>
+
+        </div>
+    </ui:define>
+</ui:composition>

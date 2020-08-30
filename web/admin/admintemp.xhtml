@@ -1,0 +1,779 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Yönetici Paneli</title>
+        <h:outputStylesheet library="css" name="bootstrap.css"/>
+        <link href="../../style.css?faces-redirect=true" rel="stylesheet" type="text/css"/>
+        <h:outputScript library="js" name="jquery-3.3.1.min.js"/>
+        <h:outputScript library="js" name="bootstrap.js"/>
+    </h:head>
+    <h:body id="anasayfa">
+
+        <div id="solresim">
+            <img src="background/logo.jpg"/>
+        </div>
+
+        <div id="ustdiv">    
+            <center><b><h:outputText value="Yönetici Paneli" style="font-style: oblique;font-family: monospace;font-size: xx-large"/></b></center>
+
+        </div>
+        <div id="sagresim">
+            <img src="background/logo2.png"/>
+        </div>
+
+
+
+
+
+        <div id="altdiv">
+            <center><b><i>
+                        İnönü Üniversitesi Bilgisayar Mühendisliği Bölümü Projesidir.Tüm Hakları Saklıdır.©
+                    </i></b></center>
+        </div>
+
+
+
+        <div id="solbutonlar">
+            <marquee>
+                <b>Proje Elemanları►&nbsp;1)Büşra MAFRATOĞLU&nbsp; 2)Ceylan DENİZ&nbsp; 3)Özge KIRÇIL&nbsp; 4)Muhammed Said KAYGİSİZ&nbsp;☺</b>
+            </marquee>
+
+        </div>
+
+        <div id="orta">
+            <ui:insert name="orta">
+
+            </ui:insert>
+
+        </div>
+
+        <div class="d-menu" id="menu">
+            <ul>
+                <li><a href="adminPaneli.xhtml">ANA SAYFA</a></li>
+                <li><a href="" title="">İLİŞKİLİ</a>
+                    <ul>
+                        <li><a href="alirListesi.xhtml?faces-redirect=true">ÖĞRENCİ<br></br>ALIR-DERS</a></li>
+                        <li><a href="verirListesi.xhtml?faces-redirect=true">ÖĞRETMEN<br></br>VERİR-DERS</a></li>
+                        <li><a href="yuklerListesi.xhtml?faces-redirect=true">ÖĞRETMEN<br></br>YÜKLER-DÖKÜMAN</a></li>
+                        <li><a href="tanimlarListesi.xhtml?faces-redirect=true">ÖĞRETMEN<br></br>TANIMLAR-GÖREV</a></li>
+                    </ul>
+                </li>
+                <li><a href="kullaniciListesi.xhtml?faces-redirect=true" title="">KULLANICI </a>
+                    <ul>
+                        <li><a href="ogretmenListesi.xhtml?faces-redirect=true">ÖĞRETMEN</a></li>
+                        <li><a href="ogrenciListesi.xhtml?faces-redirect=true">ÖĞRENCİ</a></li>
+
+
+                    </ul>
+                </li>
+                <li><a href="dersListesi.xhtml?faces-redirect=true">DERSLER</a></li>
+                <li><a href="dokumanListesi.xhtml?faces-redirect=true">DÖKÜMAN</a></li>
+                <li><a href="birimlerListesi.xhtml?faces-redirect=true">BİRİMLER</a></li>
+                <li><a href="gorevListesi.xhtml?faces-redirect=true">GÖREV</a></li>
+                <li><a href="tipListesi.xhtml?faces-redirect=true">TİP</a></li>
+                <li><a href="grupListesi.xhtml?faces-redirect=true">GRUP</a></li>
+
+
+                <h:form id="cikis">
+                    <li><h:commandLink value="ÇIKIŞ YAP" action="#{kul.logOut()}"/></li>  
+                </h:form>
+
+            </ul>
+        </div>
+
+
+        <div class="modal" tabindex="-1" role="dialog" id="deletegrup">
+            <div class="modal-dialog" role="document">
+                <h:panelGroup layout="block"  class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Silme Sayfası</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+
+                    <div class="modal-body">
+                        <p>
+                            <b><i>Grubu silmek istediğine emin misin?</i></b><br></br>                          
+                        </p>
+                    </div>
+                    <div class="modal-footer">
+                        <h:form styleClass="btn-group">
+                            <h:commandButton style="width:70px;" styleClass="btn-danger" value="Sil" action="#{grp.remove()}" onclick="$('#deletegrup').modal('hide')">
+                                <f:ajax execute="@this" render="tablo form1"/>
+                            </h:commandButton>
+                            <h:commandButton style="width:70px;" styleClass="btn-warning" value="Vazgeç" action="#{grp.clearForm()}" onclick="$('#deletegrup').modal('hide')">
+                                <f:ajax execute="@this" render="tablo form1"/>
+                            </h:commandButton>
+                        </h:form>
+                    </div>
+                </h:panelGroup>
+            </div>
+        </div>
+        <div class="modal" tabindex="-1" role="dialog" id="detaygrup">
+            <div class="modal-dialog" role="document">
+                <h:panelGroup layout="block" class="modal-content" id="detay">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Detay Sayfası</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>
+                            <b>Grup ID:</b>#{grp.grup.grup_id}<br></br>
+                            <b>Grup Adı:</b>#{grp.grup.grup_ad}<br></br>
+                        </p>
+                    </div>
+                    <div class="modal-footer">
+
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </h:panelGroup>
+            </div>
+        </div>
+        <div class="modal" tabindex="-1" role="dialog" id="deletealir">
+            <div class="modal-dialog" role="document">
+                <h:panelGroup layout="block"  class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Silme Sayfası</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>
+                            <b><i>Silmek istediğine emin misin?</i></b><br></br>                          
+                        </p>
+                    </div>
+                    <div class="modal-footer">
+                        <h:form styleClass="btn-group">
+                            <h:commandButton style="width:70px;" styleClass="btn-danger" value="Sil" action="#{alr.Remove()}" onclick="$('#deletealir').modal('hide')">
+                                <f:ajax execute="@this" render="tablo form1"/>
+                            </h:commandButton>
+                            <h:commandButton style="width:70px;" styleClass="btn-warning" value="Vazgeç" action="#{alr.clearForm()}" onclick="$('#deletealir').modal('hide')">
+                                <f:ajax execute="@this" render="tablo form1"/>
+                            </h:commandButton>
+                        </h:form>
+                    </div>
+                </h:panelGroup>
+            </div>
+        </div>
+        <div class="modal" tabindex="-1" role="dialog" id="detayalir">
+            <div class="modal-dialog" role="document">
+                <h:panelGroup layout="block" class="modal-content" id="detayalr">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Detay Sayfası</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>
+                            <b>Öğrenci ID:</b>#{alr.alir.ogrenci.ogr_id}<br></br>
+                            <b>Ad:</b>#{alr.alir.ogrenci.kul.ad}<br></br>
+                            <b>Soyadı:</b>#{alr.alir.ogrenci.kul.soyad}<br></br>
+                            <b>Mail:</b>#{alr.alir.ogrenci.kul.email}<br></br>
+                            <b>Tel No:</b>#{alr.alir.ogrenci.kul.tel_no}<br></br>
+                            <b>Ders:</b>#{alr.alir.dersler.ders_ad}<br></br>
+                            <b>Akts:</b>#{alr.alir.dersler.akts}<br></br>
+                            <b>Puan:</b>#{alr.alir.alir_puani}<br></br>
+                        </p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Kapat</button>
+                    </div>
+                </h:panelGroup>
+            </div>
+        </div>
+        <div class="modal" tabindex="-1" role="dialog" id="deletebirim">
+            <div class="modal-dialog" role="document">
+                <h:panelGroup layout="block"  class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Silme Sayfası</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+
+                    <div class="modal-body">
+                        <p>
+                            <b><i>Silmek istediğine emin misin?</i></b><br></br>                          
+                        </p>
+                    </div>
+                    <div class="modal-footer">
+                        <h:form styleClass="btn-group">
+                            <h:commandButton style="width:70px;" styleClass="btn-danger" value="Sil" action="#{birim.Remove()}" onclick="$('#deletebirim').modal('hide')">
+                                <f:ajax execute="@this" render="tablo form1"/>
+                            </h:commandButton>
+                            <h:commandButton style="width:70px;" styleClass="btn-warning" value="Vazgeç" action="#{birim.clearForm()}" onclick="$('#deletebirim').modal('hide')">
+                                <f:ajax execute="@this" render="tablo form1"/>
+                            </h:commandButton>
+                        </h:form>
+                    </div>
+                </h:panelGroup>
+            </div>
+        </div>
+        <div class="modal" tabindex="-1" role="dialog" id="detaybirim">
+            <div class="modal-dialog" role="document">
+                <h:panelGroup layout="block" class="modal-content" id="detaybrm">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Detay Sayfası</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>
+                            <b>Birim ID:</b>#{birim.birimler.birim_id}<br></br>
+                            <b>Öğretmen ID:</b>#{birim.birimler.ogretmen.ogrt_id}<br></br>
+                            <b>Öğretmen Adı:</b>#{birim.birimler.ogretmen.kul.ad}<br></br>
+                            <b>Öğretmen Soyadı:</b>#{birim.birimler.ogretmen.kul.soyad}<br></br>
+                            <b>Öğretmen Fakültesi:</b>#{birim.birimler.fakulte}<br></br>
+                            <b>Öğretmen Bölümü:</b>#{birim.birimler.bolum}<br></br>
+                        </p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Kapat</button>
+                    </div>
+                </h:panelGroup>
+            </div>
+        </div>
+        <div class="modal" tabindex="-1" role="dialog" id="deleteders">
+            <div class="modal-dialog" role="document">
+                <h:panelGroup layout="block"  class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Silme Sayfası</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+
+                    <div class="modal-body">
+                        <p>
+                            <b><i>Dersi silmek istediğine emin misin?</i></b><br></br>                          
+                        </p>
+                    </div>
+                    <div class="modal-footer">
+                        <h:form styleClass="btn-group">
+                            <h:commandButton style="width:70px;" styleClass="btn-danger" value="Sil" action="#{ders.remove()}" onclick="$('#deleteders').modal('hide')">
+                                <f:ajax execute="@this" render="tablo form1"/>
+                            </h:commandButton>
+                            <h:commandButton style="width:70px;" styleClass="btn-warning" value="Vazgeç" action="#{ders.clearForm()}" onclick="$('#deleteders').modal('hide')">
+                                <f:ajax execute="@this" render="tablo form1"/>
+                            </h:commandButton>
+                        </h:form>
+                    </div>
+                </h:panelGroup>
+            </div>
+        </div>
+
+        <div class="modal" tabindex="-1" role="dialog" id="dersdetay">
+            <div class="modal-dialog" role="document">
+                <h:panelGroup layout="block" class="modal-content" id="detayders">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Detay Sayfası</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>
+                            <b>Ders ID:</b>#{ders.dersler.ders_id}<br></br>
+                            <b>Ders Adı:</b>#{ders.dersler.ders_ad}<br></br>
+                            <b>Ders Akts:</b>#{ders.dersler.akts}<br></br>
+                            <b>Dersi Alan Öğrenciler:</b> <ul>
+                                <ui:repeat value="#{ders.dersler.ogrenciList}" var="o">
+                                    <li>#{o.kul.ad}&nbsp;#{o.kul.soyad}</li>
+                                </ui:repeat>   
+                            </ul><br></br>
+                        </p>
+                    </div>
+                    <div class="modal-footer">
+                        <button  type="button" class="btn btn-secondary" data-dismiss="modal">Kapat</button>
+                    </div>
+                </h:panelGroup>
+            </div>
+        </div>
+        <div class="modal" tabindex="-1" role="dialog" id="deletedok">
+            <div class="modal-dialog" role="document">
+                <h:panelGroup layout="block"  class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Silme Sayfası</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+
+                    <div class="modal-body">
+                        <p>
+                            <b><i>Dökümanı silmek istediğine emin misin?</i></b><br></br>                          
+                        </p>
+                    </div>
+                    <div class="modal-footer">
+                        <h:form styleClass="btn-group">
+                            <h:commandButton style="width:70px;" styleClass="btn-danger" value="Sil" action="#{dok.Remove()}" onclick="$('#deletedok').modal('hide')">
+                                <f:ajax execute="@this" render="tablo form1"/>
+                            </h:commandButton>
+                            <h:commandButton style="width:70px;" styleClass="btn-warning" value="Vazgeç" action="#{dok.clearForm()}" onclick="$('#deletedok').modal('hide')">
+                                <f:ajax execute="@this" render="tablo form1"/>
+                            </h:commandButton>
+                        </h:form>
+                    </div>
+                </h:panelGroup>
+            </div>
+        </div>
+        <div class="modal" tabindex="-1" role="dialog" id="dokumandetay">
+            <div class="modal-dialog" role="document">
+                <h:panelGroup layout="block" class="modal-content" id="detaydok">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Detay Sayfası</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>
+                            <b>Döküman ID:</b>#{dok.dokuman.dok_id}<br></br>
+                            <b>Döküman Ad:</b>#{dok.dokuman.dok_ad}<br></br>
+                            <b>Döküman Uzantı:</b>#{dok.dokuman.uzanti}<br></br>
+                            
+                        </p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </h:panelGroup>
+            </div>
+        </div>
+        <div class="modal" tabindex="-1" role="dialog" id="deletegorev">
+
+            <div class="modal-dialog" role="document">
+                <h:panelGroup layout="block"  class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Silme Sayfası</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+
+                    <div class="modal-body">
+                        <p>
+                            <b><i>Görevi silmek istediğine emin misin?</i></b><br></br>
+
+                        </p>
+                    </div>
+                    <div class="modal-footer">
+                        <h:form styleClass="btn-group">
+                            <h:commandButton style="width:70px;" styleClass="btn-danger" value="Sil" action="#{grv.Remove()}" onclick="$('#deletegorev').modal('hide')">
+                                <f:ajax execute="@this" render="tablo form1"/>
+                            </h:commandButton>
+                            <h:commandButton style="width:70px;" styleClass="btn-warning" value="Vazgeç" action="#{grv.clearForm()}" onclick="$('#deletegorev').modal('hide')">
+                                <f:ajax execute="@this" render="tablo form1"/>
+                            </h:commandButton>
+                        </h:form>
+                    </div>
+                </h:panelGroup>
+            </div>
+        </div>
+        <div class="modal" tabindex="-1" role="dialog" id="gorevdetay">
+            <div class="modal-dialog" role="document">
+                <h:panelGroup layout="block" class="modal-content" id="detaygorev">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Detay Sayfası</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>
+                            <b>Görev ID:</b>#{grv.gorev.gorev_id}<br></br>
+                            <b>Görev Adı:</b>#{grv.gorev.gorev_ad}<br></br>
+                            <b>Görev Tipi:</b>#{grv.gorev.tip.tip_ad}<br></br>
+                        </p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </h:panelGroup>
+            </div>
+        </div>
+        <div class="modal" tabindex="-1" role="dialog" id="deletekul">
+            <div class="modal-dialog" role="document">
+                <h:panelGroup layout="block"  class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Silme Sayfası</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+
+                    <div class="modal-body">
+                        <p>
+                            <b><i>Kullanıcıyı silmek istediğine emin misin?
+                                </i></b>
+                        </p>
+                    </div>
+                    <div class="modal-footer">
+                        <h:form styleClass="btn-group">
+                            <h:commandButton style="width:70px;" styleClass="btn-danger" value="Sil" action="#{kul.delete()}" onclick="$('#deletekul').modal('hide')">
+                                <f:ajax execute="@this" render="tablo form1"/>
+                            </h:commandButton>
+                            <h:commandButton style="width:70px;" styleClass="btn-warning" value="Vazgeç" action="#{kul.clearForm()}" onclick="$('#deletekul').modal('hide')">
+                                <f:ajax execute="@this" render="tablo form1"/>
+                            </h:commandButton>
+                        </h:form>
+                    </div>
+                </h:panelGroup>
+            </div>
+        </div>
+
+        <div class="modal" tabindex="-1" role="dialog" id="kullanicidetay">
+            <div class="modal-dialog" role="document">
+                <h:panelGroup layout="block" class="modal-content" id="detaykul">
+                    <div class="modal-header">
+                        <h5 class="modal-title"><b>Detay Sayfası</b></h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>
+                            <b>Kullanıcı ID:</b>#{kul.kullanici.k_id}<br></br>
+                            <b>Kullanıcı Adı:</b>#{kul.kullanici.ad}<br></br>
+                            <b>Kullanıcı Soyadı:</b>#{kul.kullanici.soyad}<br></br>
+                            <b>Kullanıcı Email:</b>#{kul.kullanici.email}<br></br>
+                            <b>Kullanıcı Telefon No:</b>#{kul.kullanici.tel_no}<br></br>
+                            <b>Kullanıcı Tipi:</b>#{kul.kullanici.grup.grup_ad}<br></br>
+                        </p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </h:panelGroup>
+            </div>
+        </div>
+        <div class="modal" tabindex="-1" role="dialog" id="deleteogr">
+            <div class="modal-dialog" role="document">
+                <h:panelGroup layout="block"  class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Silme Sayfası</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+
+                    <div class="modal-body">
+                        <p>
+                            <b><i>Öğrenciyi silmek istediğine emin misin?</i></b><br></br>                          
+                        </p>
+                    </div>
+                    <div class="modal-footer">
+                        <h:form styleClass="btn-group">
+                            <h:commandButton style="width:70px;" styleClass="btn-danger" value="Sil" action="#{ogr.Remove()}" onclick="$('#deleteogr').modal('hide')">
+                                <f:ajax execute="@this" render="tablo form1"/>
+                            </h:commandButton>
+                            <h:commandButton style="width:70px;" styleClass="btn-warning" value="Vazgeç" action="#{ogr.clearForm()}" onclick="$('#deleteogr').modal('hide')">
+                                <f:ajax execute="@this" render="tablo form1"/>
+                            </h:commandButton>
+                        </h:form>
+                    </div>
+                </h:panelGroup>
+            </div>
+        </div>
+        <div class="modal" tabindex="-1" role="dialog" id="ogrencidetay">
+            <div class="modal-dialog" role="document">
+                <h:panelGroup layout="block" class="modal-content" id="detayogr">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Detay Sayfası</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>
+                            <b>Öğrenci ID:</b>#{ogr.ogrenci.ogr_id}<br></br>
+                            <b>Öğrenci Adı:</b>#{ogr.ogrenci.kul.ad}<br></br>
+                            <b>Öğrenci Soyadı:</b>#{ogr.ogrenci.kul.soyad}<br></br>
+                            <b>Öğrenci Email:</b>#{ogr.ogrenci.kul.email}<br></br>
+                            <b>Öğrenci Telefon:</b>#{ogr.ogrenci.kul.tel_no}<br></br>
+                            <b>Öğrenci Aldığı Dersler:</b> <ul>
+                                <ui:repeat value="#{ogr.ogrenci.ogrenciDersler}" var="d">
+                                    <li>#{d.ders_ad}</li>
+                                </ui:repeat>   
+                            </ul><br></br>
+                        </p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </h:panelGroup>
+            </div>
+        </div>
+
+        <div class="modal" tabindex="-1" role="dialog" id="deleteogrt">
+            <div class="modal-dialog" role="document">
+                <h:panelGroup layout="block"  class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Silme Sayfası</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+
+                    <div class="modal-body">
+                        <p>
+                            <b><i>Öğretmeni silmek istediğine emin misin?</i></b><br></br>                          
+                        </p>
+                    </div>
+                    <div class="modal-footer">
+                        <h:form styleClass="btn-group">
+                            <h:commandButton style="width:70px;" styleClass="btn-danger" value="Sil" action="#{ogrt.Remove()}" onclick="$('#deleteogrt').modal('hide')">
+                                <f:ajax execute="@this" render="tablo form1"/>
+                            </h:commandButton>
+                            <h:commandButton style="width:70px;" styleClass="btn-warning" value="Vazgeç" action="#{ogrt.clearForm()}" onclick="$('#deleteogrt').modal('hide')">
+                                <f:ajax execute="@this" render="tablo form1"/>
+                            </h:commandButton>
+                        </h:form>
+                    </div>
+                </h:panelGroup>
+            </div>
+        </div>
+        <div class="modal" tabindex="-1" role="dialog" id="ogretmendetay">
+            <div class="modal-dialog" role="document">
+                <h:panelGroup layout="block" class="modal-content" id="detayogrt">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Detay Sayfası</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>
+                            <b>Öğretmen ID:</b>#{ogrt.ogretmen.ogrt_id}<br></br>
+                            <b>Öğretmen Adı:</b>#{ogrt.ogretmen.kul.ad}<br></br>
+                            <b>Öğretmen Soyadı:</b>#{ogrt.ogretmen.kul.soyad}<br></br>
+                            <b>Öğretmen Giriş Tarihi:</b>#{ogrt.ogretmen.ogrt_giris}<br></br>
+                            <b>Öğretmen Yüklediği Dökümanlar:</b><ul>
+                                <ui:repeat value="#{ogrt.ogretmen.ogretmenDokumans}" var="dokuman">
+                                    <li>#{dokuman.dok_ad}</li>
+                                </ui:repeat>   
+                            </ul><br></br>
+                        </p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </h:panelGroup>
+            </div>
+        </div>
+        <div class="modal" tabindex="-1" role="dialog" id="deletetnm">
+            <div class="modal-dialog" role="document">
+                <h:panelGroup layout="block"  class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Silme Sayfası</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+
+                    <div class="modal-body">
+                        <p>
+                            <b><i>Silmek istediğine emin misin?</i></b><br></br>                          
+                        </p>
+                    </div>
+                    <div class="modal-footer">
+                        <h:form styleClass="btn-group">
+                            <h:commandButton style="width:70px;" styleClass="btn-danger" value="Sil" action="#{tnmlr.Remove()}" onclick="$('#deletetnm').modal('hide')">
+                                <f:ajax execute="@this" render="tablo form1"/>
+                            </h:commandButton>
+                            <h:commandButton style="width:70px;" styleClass="btn-warning" value="Vazgeç" action="#{tnmlr.clearForm()}" onclick="$('#deletetnm').modal('hide')">
+                                <f:ajax execute="@this" render="tablo form1"/>
+                            </h:commandButton>
+                        </h:form>
+                    </div>
+                </h:panelGroup>
+            </div>
+        </div>
+        <div class="modal" tabindex="-1" role="dialog" id="tanimlardetay">
+            <div class="modal-dialog" role="document">
+                <h:panelGroup layout="block" class="modal-content" id="detaytnm">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Detay Sayfası</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>
+                            <b>Tanimlar ID:</b>#{tnmlr.tanimlar.tanimlar_id}<br></br>
+                            <b>Tanimlayan Öğretmen Ad:</b>#{tnmlr.tanimlar.ogretmen.kul.ad}<br></br>
+                            <b>Tanimlayan Öğretmen Soyad:</b>#{tnmlr.tanimlar.ogretmen.kul.soyad}<br></br>
+                            <b>Tanimlanan Görev Ad:</b>#{tnmlr.tanimlar.gorev.gorev_ad}<br></br>
+
+                        </p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </h:panelGroup>
+            </div>
+        </div>
+        <div class="modal" tabindex="-1" role="dialog" id="deletetip">
+            <div class="modal-dialog" role="document">
+                <h:panelGroup layout="block"  class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Silme Sayfası</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+
+                    <div class="modal-body">
+                        <p>
+                            <b><i>Silmek istediğine emin misin?</i></b><br></br>                          
+                        </p>
+                    </div>
+                    <div class="modal-footer">
+                        <h:form styleClass="btn-group">
+                            <h:commandButton style="width:70px;" styleClass="btn-danger" value="Sil" action="#{tp.Remove()}" onclick="$('#deletetip').modal('hide')">
+                                <f:ajax execute="@this" render="tablo form1"/>
+                            </h:commandButton>
+                            <h:commandButton style="width:70px;" styleClass="btn-warning" value="Vazgeç" action="#{tp.clearForm()}" onclick="$('#deletetip').modal('hide')">
+                                <f:ajax execute="@this" render="tablo form1"/>
+                            </h:commandButton>
+                        </h:form>
+                    </div>
+                </h:panelGroup>
+            </div>
+        </div>
+        <div class="modal" tabindex="-1" role="dialog" id="tipdetay">
+            <div class="modal-dialog" role="document">
+                <h:panelGroup layout="block" class="modal-content" id="detaytip">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Detay Sayfası</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>
+                            <b>Tip ID:</b>#{tp.tip.tip_id}<br></br>
+                            <b>Tip Adı:</b>#{tp.tip.tip_ad}<br></br>
+                        </p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </h:panelGroup>
+            </div>
+        </div>
+        <div class="modal" tabindex="-1" role="dialog" id="deletevrr">
+            <div class="modal-dialog" role="document">
+                <h:panelGroup layout="block"  class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Silme Sayfası</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+
+                    <div class="modal-body">
+                        <p>
+                            <b><i>Silmek istediğine emin misin?</i></b><br></br>                          
+                        </p>
+                    </div>
+                    <div class="modal-footer">
+                        <h:form styleClass="btn-group">
+                            <h:commandButton style="width:70px;" styleClass="btn-danger" value="Sil" action="#{vrr.Remove()}" onclick="$('#deletevrr').modal('hide')">
+                                <f:ajax execute="@this" render="tablo form1"/>
+                            </h:commandButton>
+                            <h:commandButton style="width:70px;" styleClass="btn-warning" value="Vazgeç" action="#{vrr.clearForm()}" onclick="$('#deletevrr').modal('hide')">
+                                <f:ajax execute="@this" render="tablo form1"/>
+                            </h:commandButton>
+                        </h:form>
+                    </div>
+                </h:panelGroup>
+            </div>
+        </div>
+        <div class="modal" tabindex="-1" role="dialog" id="verirdetay">
+            <div class="modal-dialog" role="document">
+                <h:panelGroup layout="block" class="modal-content" id="detayvrr">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Detay Sayfası</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>
+                            <b>Verir ID:</b>#{vrr.verir.verir_id}<br></br>
+                            <b>Dönem:</b>#{vrr.verir.verir_donem}<br></br>
+                            <b>Öğretmen Ad-Soyad:</b>#{vrr.verir.ogretmen.kul.ad}&nbsp;#{vrr.verir.ogretmen.kul.soyad}<br></br>
+                            <b>Ders:</b>#{vrr.verir.dersler.ders_ad}<br></br>
+                        </p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </h:panelGroup>
+            </div>
+        </div>
+        <div class="modal" tabindex="-1" role="dialog" id="deleteykl">
+            <div class="modal-dialog" role="document">
+                <h:panelGroup layout="block"  class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Silme Sayfası</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+
+                    <div class="modal-body">
+                        <p>
+                            <b><i>Silmek istediğine emin misin?</i></b><br></br>                          
+                        </p>
+                    </div>
+                    <div class="modal-footer">
+                        <h:form styleClass="btn-group">
+                            <h:commandButton style="width:70px;" styleClass="btn-danger" value="Sil" action="#{yukler.Remove()}" onclick="$('#deleteykl').modal('hide')">
+                                <f:ajax execute="@this" render="tablo form1"/>
+                            </h:commandButton>
+                            <h:commandButton style="width:70px;" styleClass="btn-warning" value="Vazgeç" action="#{yukler.clearForm()}" onclick="$('#deleteykl').modal('hide')">
+                                <f:ajax execute="@this" render="tablo form1"/>
+                            </h:commandButton>
+                        </h:form>
+                    </div>
+                </h:panelGroup>
+            </div>
+        </div>
+        <div class="modal" tabindex="-1" role="dialog" id="yuklerdetay">
+            <div class="modal-dialog" role="document">
+                <h:panelGroup layout="block" class="modal-content" id="detayykl">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Detay Sayfası</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>
+                            <b>Yükler ID:</b>#{yukler.yukler.yukler_id}<br></br>
+                            <b>Öğretmen Ad-Soyad:</b>#{yukler.yukler.ogrt.kul.ad}&nbsp;#{yukler.yukler.ogrt.kul.soyad}<br></br>
+                            <b>Yüklenen Ders:</b>#{yukler.yukler.ders.ders_ad}<br></br>
+                            <b>Yüklenen Döküman:</b>#{yukler.yukler.dokuman.dok_ad}<br></br>
+                        </p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </h:panelGroup>
+            </div>
+        </div>
+    </h:body>
+</html>

@@ -1,0 +1,87 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://xmlns.jcp.org/jsf/passthrough"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      template="admintemp.xhtml">
+  
+    <ui:define name="orta">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-10"><h2 id="baslik1">Görev Tablosu</h2>
+                    <h:form id="tablo">
+                        <b><i>Şuanda #{grv.page}. Sayfadasınız</i></b><br></br>
+                        <div class="btn-group">
+                            <h:commandButton rendered="#{grv.hasPrev()}" action="#{grv.first()}"  style="width: 111px; color: black" styleClass="btn-outline-primary" value="First">
+                                <f:ajax execute="@this" render="tablo form1"/>
+                            </h:commandButton>
+                            <h:commandButton rendered="#{grv.hasPrev()}" action="#{grv.previous()}"  style="width: 111px; color: black" styleClass="btn-outline-primary" value="Previous">
+                                <f:ajax execute="@this" render="tablo form1"/>
+                            </h:commandButton>
+                            <h:commandButton rendered="#{grv.hasNext()}" action="#{grv.next()}"  style="width: 111px; color: black" styleClass="btn-outline-primary"  value="Next">
+                                <f:ajax execute="@this" render="tablo form1"/>
+                            </h:commandButton>
+                            <h:commandButton rendered="#{grv.hasNext()}" action="#{grv.last()}"  style="width: 111px; color: black" styleClass="btn-outline-primary" value="Last">
+                                <f:ajax execute="@this" render="tablo form1"/>
+                            </h:commandButton>
+                        </div>
+                        <h:dataTable class="table table-striped table-hover" value="#{grv.gorevListesi}" var="gorev">
+                            <h:column>
+                                <f:facet name="header">Görev ID</f:facet>
+                                <b>#{gorev.gorev_id}</b>
+                            </h:column>
+
+                            <h:column>
+                                <f:facet name="header">Görev Tipi</f:facet>
+                                    #{gorev.tip.tip_ad}
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">Görev Adı</f:facet>
+                                <h:commandLink style="color: #000" value="#{gorev.gorev_ad}" action="#{grv.updateForm(gorev)}">
+                                    <f:ajax execute="@this" render="form1"/>
+                                </h:commandLink>
+                            </h:column>
+
+
+                            <h:column>
+                                <f:facet name="header">Delete-Detail</f:facet>
+                                <h:commandButton onclick="$('#deletegorev').modal('show')" styleClass="btn-danger" value="Delete" action="#{grv.updateForm(gorev)}">
+                                    <f:ajax execute="form1" render="deletegorev form1"/>
+                                </h:commandButton>
+                                <h:commandButton value="Detail" onclick="$('#gorevdetay').modal('show')" styleClass="btn-info" action="#{grv.updateForm(gorev)}">                                             
+                                    <f:ajax execute="@this" render="detaygorev"/>
+                                </h:commandButton>
+                            </h:column>
+                        </h:dataTable>
+                    </h:form>
+                </div>
+                <div class="col-md-2">
+                    <h:form  styleClass="d-table" id="form1"><h1 id="baslik2">Form</h1>
+
+                        <b><h:outputText value="Görev Adı"></h:outputText><br></br></b>
+                        <h:inputText p:placeholder="Görev Adı Giriniz" required="true" requiredMessage="Görev Adı Alanını Boş Bırakma" title="Görev Adı" value="#{grv.gorev.gorev_ad}" autocomplete="off" /><br></br>
+
+                        <b><label for="grvlist">Görev Tipi</label></b> 
+                        <h:selectOneMenu styleClass="custom-select" id="grvlist" value="#{grv.gorev.tip}" converter="tipConverter">   
+                            <f:selectItems value="#{tp.tipListesi}" var="tipp" itemValue="#{tipp}" itemLabel="#{tipp.tip_ad}"/>
+                        </h:selectOneMenu>
+                        <h:form styleClass="btn btn-group ">
+                            <h:commandButton rendered="#{grv.gorev.gorev_id!=0}"  styleClass="btn-primary"  value="Güncelle" action="#{grv.updatee()}">
+                                <f:ajax execute="form1" render="form1 tablo"/>
+                            </h:commandButton>
+                            <h:commandButton rendered="#{grv.gorev.gorev_id==0}"  styleClass="btn-success" value="Kaydet" action="#{grv.insert()}">
+                                <f:ajax execute="form1" render="form1 tablo"/>
+                            </h:commandButton>
+                            <h:commandButton rendered="#{grv.gorev.gorev_id!=0}"  styleClass="btn-success" value="Formu Temizle" action="#{grv.clearForm()}">
+                                <f:ajax execute="form1 tablo" render="form1 tablo"/>
+                            </h:commandButton>
+                        </h:form>
+                    </h:form>
+                </div>
+            </div>
+        </div>
+        </ui:define>
+</ui:composition>
+

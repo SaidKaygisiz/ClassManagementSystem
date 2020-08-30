@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="templateindex.xhtml"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:define name="orta">
+        <h3><b>Ders Listesi</b></h3>
+        <h:form id="tablo">
+            <b><i>Şuanda #{ders.page}. Sayfadasınız</i></b><br></br>
+            <div class="btn-group">
+                <h:commandButton rendered="#{ders.hasPrev()}" action="#{ders.first()}"  style="width: 111px; color: black" styleClass="btn-outline-primary" value="First">
+                    <f:ajax execute="@this" render="tablo"/>
+                </h:commandButton>
+                <h:commandButton rendered="#{ders.hasPrev()}" action="#{ders.previous()}"  style="width: 111px; color: black" styleClass="btn-outline-primary" value="Previous">
+                    <f:ajax execute="@this" render="tablo"/>
+                </h:commandButton>
+                <h:commandButton rendered="#{ders.hasNext()}" action="#{ders.next()}"  style="width: 111px; color: black" styleClass="btn-outline-primary"  value="Next">
+                    <f:ajax execute="@this" render="tablo"/>
+                </h:commandButton>
+                <h:commandButton rendered="#{ders.hasNext()}" action="#{ders.last()}"  style="width: 111px; color: black" styleClass="btn-outline-primary" value="Last">
+                    <f:ajax execute="@this" render="tablo"/>
+                </h:commandButton>
+            </div>
+
+            <h:dataTable class="table-striped table-hover" var="drs" value="#{ders.dersListesi}">
+                <h:column>
+                    <f:facet name="header">Ad</f:facet>
+                    <b>#{drs.ders_ad}</b>
+                </h:column>
+                <h:column>
+                    <f:facet name="header">AKTS</f:facet>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>#{drs.akts}</b>
+                </h:column> 
+            </h:dataTable>
+        </h:form>
+    </ui:define>
+</ui:composition>

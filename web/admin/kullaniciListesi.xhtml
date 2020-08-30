@@ -1,0 +1,121 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:p="http://xmlns.jcp.org/jsf/passthrough"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="admintemp.xhtml">
+    <ui:define name="orta">
+        <div class="container">
+
+            <div class="row">
+               
+                <div class="col-md-10"><h2 id="baslik1"><b>Kullanıcı Tablosu</b></h2>
+                    <h:form id="tablo">
+                        <b><i>Şuanda #{kul.page}. Sayfadasınız</i></b><br></br>
+                        <div class="btn-group">
+                            <h:commandButton rendered="#{kul.hasPrev()}" action="#{kul.first()}"  style="width: 111px; color: black" styleClass="btn-outline-primary" value="First">
+                                <f:ajax execute="@this" render="tablo form1"/>
+                            </h:commandButton>
+                            <h:commandButton rendered="#{kul.hasPrev()}" action="#{kul.previous()}"  style="width: 111px; color: black" styleClass="btn-outline-primary" value="Previous">
+                                <f:ajax execute="@this" render="tablo form1"/>
+                            </h:commandButton>
+                            <h:commandButton rendered="#{kul.hasNext()}" action="#{kul.next()}"  style="width: 111px; color: black" styleClass="btn-outline-primary"  value="Next">
+                                <f:ajax execute="@this" render="tablo form1"/>
+                            </h:commandButton>
+                            <h:commandButton rendered="#{kul.hasNext()}" action="#{kul.last()}"  style="width: 111px; color: black" styleClass="btn-outline-primary" value="Last">
+                                <f:ajax execute="@this" render="tablo form1"/>
+                            </h:commandButton>
+                        </div>
+                        <h:dataTable class="table table-striped table-hover" value="#{kul.kullanicilist}" var="kullanici" >
+                            <h:column>
+                                <f:facet name="header">Grup Adı</f:facet>
+                                    #{kullanici.grup.grup_ad}
+                            </h:column>
+
+                            <h:column>
+                                <f:facet name="header">AD</f:facet>
+                                <h:commandLink style="color: black" value="#{kullanici.ad}" action="#{kul.updateForm(kullanici)}">
+                                    <f:ajax execute="@this" render="form1 form2 form3"/>
+                                </h:commandLink>
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">SOYAD</f:facet>
+                                    #{kullanici.soyad}
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">EMAİL</f:facet>
+                                    #{kullanici.email}
+                            </h:column>
+
+                            <h:column>
+                                <f:facet name="header">GSM</f:facet>
+                                    #{kullanici.tel_no}
+                            </h:column>  
+                            <h:column>
+                                <f:facet name="header">Delete-Detail</f:facet>
+                                <div class="btn-group">
+                                    <h:commandButton onclick="$('#deletekul').modal('show')" styleClass="btn-danger" value="Delete" action="#{kul.updateForm(kullanici)}">
+                                        <f:ajax execute="@this" render="deletekul form1"/>
+                                    </h:commandButton>
+                                    <h:commandButton value="Detail" onclick="$('#kullanicidetay').modal('show')" styleClass="btn-info" action="#{kul.updateForm(kullanici)}">                                             
+                                        <f:ajax execute="@this" render="detaykul"/>
+                                    </h:commandButton>
+                                </div>
+                            </h:column>
+                        </h:dataTable>
+
+                    </h:form>   
+                </div>
+                <div class="col-md-2">
+                    <h:form  styleClass="form-inline" id="form1"><h3 id="baslik2"><b>Form</b></h3>
+                        <h:selectOneMenu styleClass="custom-select" value="#{kul.kullanici.grup}" converter="grupConverter">    
+                            <f:selectItems value="#{grp.grupListesi}" var="g" itemValue="#{g}" itemLabel="#{g.grup_ad}"/>
+                            <f:ajax execute="@this" render="form1"/>
+                        </h:selectOneMenu><br></br>
+                        <b> <h:outputText value="Ad"></h:outputText><br></br></b>
+                        <h:inputText id="ad" p:placeholder="Ad Giriniz"  required="true" requiredMessage="Boş Bırakılamaz!"  validatorMessage="Yalnız harf girin!" value="#{kul.kullanici.ad}" autocomplete="off" >
+                            <f:validateRegex pattern="[A-Za-z \ç\Ç\ö\Ö\ş\Ş\ı\İ\ğ\Ğ\ü\Ü ]+"/> 
+                        </h:inputText>
+                        <h:message for="ad" errorStyle="color:red;display:block"/><br></br>
+                        <b><h:outputText value="Soyad"></h:outputText><br></br></b>
+                        <h:inputText id="soyad" p:placeholder="Soyad Giriniz" required="true" requiredMessage="Boş Bırakılamaz!" validatorMessage="Yalnız harf girin!" value="#{kul.kullanici.soyad}" autocomplete="off" >
+                            <f:validateRegex pattern="[A-Za-z \ç\Ç\ö\Ö\ş\Ş\ı\İ\ğ\Ğ\ü\Ü]+"/>
+                        </h:inputText>
+                        <h:message for="soyad" errorStyle="color:red;display:block"/><br></br>
+                        <b><h:outputText value="Email"></h:outputText><br></br></b>
+                        <h:inputText id="email" p:placeholder="E-Mail Giriniz" required="true" requiredMessage="Boş Bırakılamaz!" validatorMessage="Geçersiz E-mail!" value="#{kul.kullanici.email}" autocomplete="off" >
+                            <f:validateRegex pattern="[\w\.-]*[a-zA-Z0-9_]@[\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z]"/>
+                        </h:inputText>
+                        <h:message for="email" errorStyle="color:red;display:block"/><br></br>
+                        <b> <h:outputText value="Şifre"></h:outputText><br></br></b>
+                        <h:inputSecret id="sifree" p:placeholder="Şifre Giriniz" requiredMessage="Boş Bırakılamaz!"  value="#{kul.kullanici.sifre}"/>
+                        <h:message for="sifree" errorStyle="color:red;display:block"/><br></br>
+                        <b><h:outputText value="Tel No"></h:outputText><br></br></b>
+                        <h:inputText id="tel" p:placeholder="10 hane olarak girin" required="true" requiredMessage="Boş Bırakılamaz!" validatorMessage="Yalnız sayı girin!" value="#{kul.kullanici.tel_no}" autocomplete="off" >   
+                            <f:validateRegex pattern="[0-9]+"/>
+                        </h:inputText>
+                        <h:message for="tel" errorStyle="color:red;display:block"/><br></br>
+                        <b><h:outputText rendered="#{kul.kullanici.grup.grup_id==3}"  value="Öğrenci Sınıf"/></b><br></br>
+                        <h:inputText rendered="#{kul.kullanici.grup.grup_id==3}" id="ogrsinif" required="true"  p:placeholder="Öğrenci Sınıfı Giriniz" value="#{kul.kullanici.ogrenci.sinif}"/><br></br><br></br>
+                        <h:form styleClass="btn-group">
+                            <h:commandButton rendered="#{kul.kullanici.k_id!=0}"  styleClass="btn-primary"  value="Güncelle" action="#{kul.updatee()}">
+                                <f:ajax execute="form1" render="form1 tablo"/>
+                            </h:commandButton>
+                            <h:commandButton rendered="#{kul.kullanici.k_id==0}"  styleClass="btn-success" value="Kaydet" action="#{kul.insert()}">
+                                <f:ajax execute="form1" render="form1 tablo"/>
+                            </h:commandButton>
+                        </h:form>
+                    </h:form>
+                    <h:form id="form2">
+                        <h:commandButton rendered="#{kul.kullanici.k_id!=0}"  styleClass="btn-success" value="Formu Temizle" action="#{kul.clearForm()}">
+                            <f:ajax execute="@this" render="form1 form2"/>
+                        </h:commandButton>
+                    </h:form>
+                </div>
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>
+
